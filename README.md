@@ -1,3 +1,18 @@
+# Hangman UI
+
+## Hangman Game
+
+Select a letter to figure out a hidden word in a set amount of chances
+
+## Project Specifications
+
+-   user login
+-   fetch new random word details from api
+-   Display hangman pole and figure using SVG
+-   Display word in UI with correct letters
+-   Show popup on win or lose
+-   Play again button to reset game
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

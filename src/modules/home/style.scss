@@ -1,0 +1,23 @@
+.figure-container {
+    fill: transparent;
+    stroke: #000;
+    stroke-width: 10px;
+    stroke-linecap: round;
+}
+
+.figure-part {
+    display: none;
+}
+
+.main-home{
+    background: antiquewhite;
+}
+
+@media (min-width: 768px) {
+    .main-home{
+        height: 100vh;
+    }
+    .main-home-partition{
+        height: 100%;
+    }
+}
