@@ -13,6 +13,10 @@ Select a letter to figure out a hidden word in a set amount of chances
 -   Show popup on win or lose
 -   Play again button to reset game
 
+## TDD
+
+https://docs.google.com/document/d/1CjPlbjJOCuizLRhJYKuKOZECZXz2y8I5nsQVgwJpxjs/edit?usp=sharing
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

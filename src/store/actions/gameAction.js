@@ -3,7 +3,7 @@ import { ActionType } from '../../helpers';
 
 // get data for current game
 const currentGame = () => async (dispatch) => {
-    const res = await client.get(`current-game`);
+    const res = await client.get(`game/last`);
     dispatch({
         type: ActionType.GAME,
         payload: res.data,
@@ -11,9 +11,9 @@ const currentGame = () => async (dispatch) => {
     return res.data;
 };
 
-// reset current game and start new game
+// reset current game and start a new game
 const newGame = () => async (dispatch) => {
-    const res = await client.get(`new-game`);
+    const res = await client.get(`game`);
     dispatch({
         type: ActionType.GAME,
         payload: res.data,
