@@ -3,9 +3,4 @@ export const RoutePath = {
     home: '/home',
 };
 
-export const ActionType = {
-    LOGOUT: 'LOGOUT',
-    GAME: 'GAME',
-};
-
 export const maxGuesses = 6;

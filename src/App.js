@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
-import { store } from './store';
 import Routes from './routes';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+const queryClient = new QueryClient();
 
 export default class App extends Component {
     render() {
         return (
-            <Provider store={store}>
+            <QueryClientProvider client={queryClient} contextSharing={true}>
                 <BrowserRouter>
                     <ToastProvider>
                         <Routes />
                     </ToastProvider>
                 </BrowserRouter>
-            </Provider>
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
         );
     }
 }
