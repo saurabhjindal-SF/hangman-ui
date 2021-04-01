@@ -1,53 +1,81 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Figure from './components/figure';
 import Word from './components/word';
 import Letter from './components/letter';
 import Popup from './components/popup';
 import './style.scss';
-import { useSelector, useDispatch } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
-import Actions from '../../store/actions';
 import Button from '../../shared/forms/button';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { currentGameRequest, newGameRequest, guessRequest } from '../../queries/game.queries';
+import { maxGuesses } from '../../helpers';
+
+const gameKey = 'game';
 
 const Home = () => {
-    const game = useSelector((state) => state.game);
     const { addToast } = useToasts();
-    const dispatch = useDispatch();
+    const queryClient = useQueryClient();
 
-    // load current game for the user on login
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                if (!game.loaded) { 
-                    await dispatch(Actions.gameAction.currentGame());
-                }
-            } catch (e) {
-                console.log(e);
-                addToast(e.message, { appearance: 'error', autoDismiss: true });
-            }
-        }
-        fetchData();
-    }, [addToast, dispatch, game.loaded]);
+    // current game
+    const { data: game } = useQuery(gameKey, currentGameRequest, {
+        refetchOnWindowFocus: false,
+        initialData: {
+            word: '',
+            guessesLeft: maxGuesses,
+            guesses: [],
+            originalWord: '',
+        },
+        onError: (e) => {
+            addToast(e.message, { appearance: 'error', autoDismiss: true });
+        },
+    });
+
+    const { mutate: guessMutate } = useMutation(guessRequest, {
+        onError: (e) => {
+            addToast(e.message, { appearance: 'error', autoDismiss: true });
+        },
+        onSuccess: (res) => {
+            queryClient.setQueryData(gameKey, (prev) => {
+                return {
+                    ...prev,
+                    ...res,
+                };
+            });
+        },
+    });
 
     // guess the letter
     async function guess(letter) {
         try {
-            await dispatch(Actions.gameAction.guess(letter));
+            await guessMutate(letter);
         } catch (e) {
-            console.log(e);
-            addToast(e.message, { appearance: 'error', autoDismiss: true });
+            console.error(e);
         }
     }
 
     // reset game
-    async function newGame(letter) {
+    async function newGame() {
         try {
-            await dispatch(Actions.gameAction.newGame());
+            await newGameMutate();
         } catch (e) {
-            console.log(e);
-            addToast(e.message, { appearance: 'error', autoDismiss: true });
+            console.error(e);
         }
     }
+
+    const { mutate: newGameMutate } = useMutation(newGameRequest, {
+        onError: (e) => {
+            addToast(e.message, { appearance: 'error', autoDismiss: true });
+        },
+        onSuccess: (res) => {
+            queryClient.setQueryData(gameKey, (prev) => {
+                return {
+                    ...prev,
+                    ...res,
+                };
+            });
+        },
+    });
+
     return (
         <>
             <main className="container-fluid text-center d-flex justify-content-center main-home">

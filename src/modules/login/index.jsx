@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import './style.scss';
 import { RoutePath, setAccessToken, setMessage, ValidationMessages } from '../../helpers';
 import Button from '../../shared/forms/button';
-import { useDispatch } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
 import { useHistory } from 'react-router-dom';
-import Actions from '../../store/actions';
+import { useMutation } from 'react-query';
+import { loginRequest } from '../../queries/auth.queries';
 
 const ValidationSchema = Yup.object().shape({
     username: Yup.string().required(setMessage(ValidationMessages.required, 'Username')),
@@ -16,21 +16,24 @@ const ValidationSchema = Yup.object().shape({
 const Login = () => {
     const history = useHistory();
     const { addToast } = useToasts();
-    const [loading, setLoading] = useState(false);
 
-    const dispatch = useDispatch();
-    const submit = async (params) => {
-        setLoading(true);
-        try {
-            const res = await dispatch(Actions.authAction.Login(params));
+    const { mutate, isLoading } = useMutation(loginRequest, {
+        onError: (e) => {
+            addToast(e.message, { appearance: 'error', autoDismiss: true });
+        },
+        onSuccess: (res) => {
             if (res && res.code) {
                 setAccessToken(res.code);
                 history.push(RoutePath.home);
             }
+        },
+    });
+
+    const submit = async (params) => {
+        try {
+            await mutate(params);
         } catch (e) {
-            console.log(e);
-            addToast(e.message, { appearance: 'error', autoDismiss: true });
-            setLoading(false);
+            console.error(e);
         }
     };
 
@@ -80,7 +83,7 @@ const Login = () => {
                                             <Button
                                                 title={'Login'}
                                                 btnType={'submit'}
-                                                loading={loading}
+                                                loading={isLoading}
                                             />
                                         </div>
                                     </Form>

@@ -1,17 +1,17 @@
 import React from 'react';
-import { isLogin, clearLocalStorage, RoutePath, ActionType } from '../../../helpers';
+import { isLogin, clearLocalStorage, RoutePath,  } from '../../../helpers';
 import Button from '../../../shared/forms/button';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useQueryClient } from 'react-query';
 
 const Header = () => {
     const history = useHistory();
-    const dispatch = useDispatch();
-    // clear local storage,redux data and redirect on logout
+    const queryClient = useQueryClient();
+    // clear local storage,cache and redirect on logout
     const logout = () => {
         clearLocalStorage();
         history.push(RoutePath.login);
-        dispatch({ type: ActionType.LOGOUT });
+        queryClient.clear();
     };
     return (
         <nav className="navbar shadow">
